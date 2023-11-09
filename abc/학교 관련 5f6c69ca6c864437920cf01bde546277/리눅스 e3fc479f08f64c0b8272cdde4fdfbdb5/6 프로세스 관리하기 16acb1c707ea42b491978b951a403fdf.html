@@ -1,0 +1,685 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>6. 프로세스 관리하기</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="16acb1c7-07ea-42b4-9197-8b951a403fdf" class="page sans"><header><h1 class="page-title">6. 프로세스 관리하기</h1><p class="page-description"></p></header><div class="page-body"><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><strong>프로세스 개념</strong></summary><div class="indented"><ul id="cd5af4d7-98a4-454d-aad3-4cbc2a0520f9" class="toggle"><li><details open=""><summary><strong>프로세스의 관리 방법</strong></summary><ul id="fcc7df9a-b107-4b85-b313-21e8d8415476" class="bulleted-list"><li style="list-style-type:disc">프로세스 관리 → 작업 제어 → 작업 예약</li></ul><ul id="ab5f65bc-c07f-4e27-baa5-4a4731dcc72e" class="bulleted-list"><li style="list-style-type:disc"></li></ul><figure id="ee7aee28-48db-4a88-93b2-23d7d098e65f" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled.png"><img style="width:515px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled.png"/></a></figure></details></li></ul><ul id="b9897e5e-d7c3-42bb-a941-e77758bdd7e2" class="toggle"><li><details open=""><summary><strong>프로세스 : 현재 시스템에서 실행 중인 프로그램</strong></summary><ul id="75c44394-08b1-4fe0-bf05-633c0f851403" class="bulleted-list"><li style="list-style-type:disc">사용자 프로세스, 시스템 프로세스</li></ul></details></li></ul><ul id="1b4bb636-57ed-4fa1-a248-395ad12720a8" class="toggle"><li><details open=""><summary><strong>프로세스의 부모 - 자식 관계</strong></summary><ul id="981c60c0-6ddf-4cda-b77f-b27655456ece" class="bulleted-list"><li style="list-style-type:disc">부모 프로세스는 자식 프로세스를 생성하고, 자식 프로세스는 또 다른 자식 프로세스 생성이 가능함</li></ul><ul id="4c757aaf-7260-422c-8f05-b33dccc526ec" class="bulleted-list"><li style="list-style-type:disc">자식 프로세스는 할 일이 끝나면 부모 프로세스에게 결과를 돌려주고 종료된다.</li></ul></details></li></ul><ul id="599537ef-aef0-45ce-b4de-eebc826cfe4c" class="toggle"><li><details open=""><summary><strong>프로세스 번호</strong></summary><ul id="ddfa171e-9dc4-4a8e-83d0-4bfcacf8d2c8" class="bulleted-list"><li style="list-style-type:disc">각 프로세스는 고유한 번호를 갖고 있다.</li></ul><ul id="0fe2c3de-8569-41ba-bde0-5f08d3b2dadb" class="bulleted-list"><li style="list-style-type:disc">ex) systemd, init 프로세스는 (PID: 1)번이다. Ktheradd (PID: 2)</li></ul><ul id="64f6a1cf-a93d-47ba-bfc0-6dd7aec15b0c" class="bulleted-list"><li style="list-style-type:disc">ex) 참고로 k treadd (PID: 2) 는 k = kernel, d = daemon이라는 뜻이다.</li></ul><ul id="f4f44eeb-0d99-4278-b2be-9c290df755c1" class="bulleted-list"><li style="list-style-type:disc">ex) systemd는 d = daemon (PID: 1)</li></ul></details></li></ul><ul id="a5e40dc8-eacc-4571-a739-54941cc6436d" class="toggle"><li><details open=""><summary><strong>특수한 프로세스</strong></summary><ul id="00df4a68-04ec-4f35-ad6a-dc728d4af3da" class="toggle"><li><details open=""><summary><strong>데몬(daemon) 프로세스</strong></summary><ul id="455ca714-6193-402c-a732-0d56bd93a7ca" class="bulleted-list"><li style="list-style-type:disc">특정 서비스를 제공하기 위해 존재, 리눅스 커널에 의해 자동 실행되는 경우가 많음.</li></ul><ul id="7bae0e59-6df9-43cb-b237-beb1496a3828" class="bulleted-list"><li style="list-style-type:disc">ex) sshd (원격 접속 서비스 데몬), httpd (웹 서비스 데몬), smtpd (메일 전송 데몬) <span style="border-bottom:0.05em solid">보통 뒤에 오는 d는 데몬 프로세스이다.</span></li></ul><ul id="11c7cbc3-dcd4-4890-8931-23c2d801f69f" class="bulleted-list"><li style="list-style-type:disc">DDoS (Distributed Denial of Service)</li></ul><p id="5fb5a640-5137-46e0-b52f-6fbdcfe4153b" class="">
+</p></details></li></ul><ul id="0f22f881-77e2-4f40-83bc-9c862b2edf40" class="toggle"><li><details open=""><summary><strong>고아 프로세스</strong></summary><ul id="e612f92a-82a1-4215-a15e-511e13f74b57" class="bulleted-list"><li style="list-style-type:disc">자식 프로세스가 실행 중일 때, 부모 프로세스가 먼저 종료된 자식 프로세스</li></ul><ul id="f00e5463-378a-45e2-82d6-bbaa201db5c4" class="bulleted-list"><li style="list-style-type:disc">1번 프로세스(systemd 또는 init)가 새로운 부모 프로세스가 된다.</li></ul></details></li></ul><ul id="9d0282c5-0566-4ea1-801e-5c38ab3254f1" class="toggle"><li><details open=""><summary><strong>좀비 프로세스</strong></summary><ul id="e6805846-6b36-4423-9538-850a1b4d3081" class="bulleted-list"><li style="list-style-type:disc">프로세스가 실행을 종료했는데도, 프로세스 테이블의 목록에 남아 있는 경우.</li></ul><ul id="80918ffe-0872-439f-a073-20614d143929" class="bulleted-list"><li style="list-style-type:disc">좀비 프로세스가 프로세스 테이블의 용량이 부족해서 일반 프로세스가 실행되지 않을 수도 있음.</li></ul></details></li></ul></details></li></ul><ul id="0ba120a7-f99f-4c3d-9f57-c14a948fb861" class="toggle"><li><details open=""><summary><strong>현재 실행 중인 프로세스의 목록을 보는 명령 (</strong><strong><mark class="highlight-blue">ps</mark></strong><strong>)</strong></summary><ul id="efde22a8-f2ab-429f-b42b-8f3175f6afd4" class="bulleted-list"><li style="list-style-type:disc"><strong>유닉스 옵션(SVR4) : 묶어서 사용이 된다. 붙임표(-)로 시작 (예 : -efpu) [</strong><span style="border-bottom:0.05em solid"><strong>시험엔 이것만 나옴</strong></span><strong>]</strong></li></ul><ul id="ae37a0b9-b4a9-4af1-8e33-b4bc9df7e3ce" class="bulleted-list"><li style="list-style-type:disc">BSD 옵션 : 묶어서 사용 가능, 붙임표(-)로 시작하지 않는다.  (aux)</li></ul><ul id="541c4ed4-428e-47e6-8cce-f6a6896972cf" class="bulleted-list"><li style="list-style-type:disc">GNU 옵션 : 붙임표 두 개로 시작 (예 : --pid)</li></ul><ul id="da621b03-065e-4a76-84b4-45d9d4451ac8" class="toggle"><li><details open=""><summary>ps 명령어는 파이프라인으로 grep과 같이 많이 사용됨</summary><ul id="9a9003d7-bed2-4559-ba2b-8c9021cedd31" class="toggle"><li><details open=""><summary>ps 명령을 옵션 없이 사용하면, <strong>현재 사용자 프로세스에 대한 정보를 출력함</strong></summary><figure id="aa0d5ae1-f0bf-4dcc-8abc-91d29e77ca79" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%201.png"><img style="width:283px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%201.png"/></a></figure></details></li></ul><ul id="26fbe5f0-4c8a-48f0-a7dc-b0db83d76d5d" class="toggle"><li><details open=""><summary><strong>ps -e는 시스템에서 실행중인 모든 프로세스 정보 출력</strong></summary><figure id="3a0ac422-0fcb-4f9e-8b72-6ce5f7f9d188" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%202.png"><img style="width:470px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%202.png"/></a></figure><ul id="fe8a134d-28d4-40a4-ac6e-de7f96059086" class="bulleted-list"><li style="list-style-type:disc">PID 1과, 2는 알고 있을 것.</li></ul></details></li></ul><ul id="89ec943a-bf42-47f2-a5f7-d740e9a51c97" class="toggle"><li><details open=""><summary><strong>ps -f는 UID, PPID, C, STIME 정보를 추가로 출력해준다</strong>.</summary><figure id="a56b6b73-3b9a-4cc5-843f-e4b5211acf53" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%203.png"><img style="width:572px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%203.png"/></a></figure><figure id="6f5dbe71-5af4-4c57-98e6-8e325b4e01bf" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%204.png"><img style="width:517px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%204.png"/></a></figure><p id="e3573fb8-1b18-41c6-aec1-6d8768cfd65a" class="">
+</p></details></li></ul><ul id="d9b981b9-e865-43ba-a240-a2fef644c49d" class="toggle"><li><details open=""><summary><strong>보통 두 개를 조합해서 쓴다</strong>.</summary><figure id="259ebaeb-43de-45d3-96b9-348e17309e38" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%205.png"><img style="width:714px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%205.png"/></a></figure><ul id="bf69ce3c-3d47-437a-a6e8-6a9251a3a57c" class="bulleted-list"><li style="list-style-type:disc">ps -ef | grep kthreadd 처럼..</li></ul><p id="22f8f827-a027-45d2-bf68-ca141eca6672" class="">
+</p></details></li></ul><ul id="b5ab5f80-4e85-4f6e-a68e-67a73471f88d" class="toggle"><li><details open=""><summary><strong>요약</strong></summary><ul id="2d49f72e-df5e-4f35-bf1e-226e54760fa6" class="bulleted-list"><li style="list-style-type:disc">ps : 현재 사용자 프로세스에 대한 정보 출력</li></ul><ul id="cf8b746b-656b-40d9-a20b-81d4c992ebb7" class="bulleted-list"><li style="list-style-type:disc">ps -e : 현재 사용자 프로세스를 포함하여 시스템에서 실행중인 모든 프로세스 정보 출력</li></ul><ul id="28ceab26-b29f-4018-a0b6-6b789e76b215" class="bulleted-list"><li style="list-style-type:disc">ps -f : UIDm PPID, C, STIME 정보를 추가로 출력</li></ul><ul id="4d500341-99b2-46ef-b017-bcdf56a35748" class="bulleted-list"><li style="list-style-type:disc">ps -u : user1 사용자가 수행한 프로세스 정보 출력</li></ul><ul id="d587d76b-87ab-428d-82b2-803dfc62bae0" class="bulleted-list"><li style="list-style-type:disc">ps -p PID: 특정 PID의 프로세스 정보 출력 (ex : ps -p 1)</li></ul><ul id="87d121cf-2db3-4cf4-8c46-9a6c3fd69d11" class="bulleted-list"><li style="list-style-type:disc">참고로 ps -fu는 실행이 되는데 ps -uf는 안됨.</li></ul><p id="48a737e2-d2de-4a2a-8d62-21a99b01c38b" class="">
+</p></details></li></ul></details></li></ul><ul id="77b16c1c-4a2d-4be9-b9da-36378a0a0d3e" class="toggle"><li><details open=""><summary>요약에 대해 알았다면 pgrep도 알아보자.</summary><ul id="c0249945-15a3-4058-8eff-b91bbaa42947" class="toggle"><li><details open=""><summary>pgrep ba는 ba 패턴을 포함하는 모든 프로세스 PID 출력</summary><ul id="35d84ee8-a943-47ac-96d0-4c76c508d551" class="bulleted-list"><li style="list-style-type:disc">프로세스의 PID만 알려준다.</li></ul><figure id="69045f1b-27d3-48d1-8fa9-0f0e1e812416" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%206.png"><img style="width:245px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%206.png"/></a></figure></details></li></ul><ul id="257610a1-1333-44ac-ba2d-74c10bb1e369" class="toggle"><li><details open=""><summary>pgrep -x bash는 정확하게 프로세스의 이름을 안다면</summary><ul id="514d0619-74ec-4f96-a567-065997eca819" class="bulleted-list"><li style="list-style-type:disc">해당 PID를 알려줌</li></ul><figure id="8df5212c-5cfa-4115-a1c1-7d7a0a6eda45" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%207.png"><img style="width:296px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%207.png"/></a></figure></details></li></ul><ul id="e843d04d-5fd2-4e0f-b1b3-746259f2315e" class="toggle"><li><details open=""><summary>pgrep -u user1 -l ba는 <strong>특정 사용자(user1)</strong>에 대하여 <strong>ba 패턴을 포함</strong>하는 <strong>프로세스의 PID, 명령어를 출력</strong>한다.</summary><p id="f6eafacc-35c0-4634-85bc-10d61296f60f" class=""><strong>PID와 프로세스의 이름을 알려주는 모습.</strong></p><figure id="ab6f4883-751c-4e79-ac19-a8ffe4b4baad" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%208.png"><img style="width:352px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%208.png"/></a></figure></details></li></ul><ul id="6e07c78d-b6e8-4ce9-b2e6-99bb8d49662d" class="toggle"><li><details open=""><summary><strong>pgrep -l ba는 가장 많이쓰는 명령어 중 하난데, ba와 관련된 PID와 이름을 알려준다.</strong></summary><p id="9eb874f6-314d-407e-9732-96ae0daeff25" class=""><strong>PID와 프로세스 이름을 알려줌.</strong></p><figure id="3f4055f1-dad9-4ed9-8115-45142113bf12" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%209.png"><img style="width:271px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%209.png"/></a></figure></details></li></ul></details></li></ul></details></li></ul><ul id="6644b197-e9f2-4b1b-8117-97fa90616b18" class="toggle"><li><details open=""><summary><strong>시그널(signal)</strong></summary><ul id="8e21838b-9156-48d4-a043-d97cd8cbd313" class="bulleted-list"><li style="list-style-type:disc">프로세스에 간단한 메시지를 알려주는 것.</li></ul><ul id="5d2d6589-b883-478f-9687-a8caa39acd38" class="toggle"><li><details open=""><summary>리눅스에서 지원하는 시그널의 목록은 <strong>kill -l</strong> 명령어로 알 수 있다.</summary><figure id="5db65bef-118a-42a0-a500-21bba319b0cd" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%2010.png"><img style="width:631px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%2010.png"/></a></figure><p id="6601878f-b951-43bf-8a45-87d93b6b4b74" class="">SIGINT(2) 에서 INT는 Intfrupt의 준말, (멈춤) Ctrl+c</p><p id="d2a76bbd-d057-4946-8fce-af9397e8b8d6" class="">SIGKILL(9) 에서 KILL은 그냥 Kill이다. (강제 종료) Ctrl + \ (파이프라인)</p><p id="9fc25850-69cb-4399-a1d6-d94f1e288866" class="">SIGTERM(15) 에서 TERM는 Terminate의 준말. (종료) </p><p id="323bc9a3-ec72-4030-afa6-6f458e9e59ca" class=""><strong>가장 강력한 건 KILL (강제 종료의 의미이다)</strong></p><ul id="2d2704c7-75da-42e9-aa7c-20956ff0d866" class="bulleted-list"><li style="list-style-type:disc">명령어를 실행 중 일 때, 명령어를 하나 더 켜서 <p id="a1cdc2a8-5a1c-4093-9233-16f563a48670" class="">ps -ef | grep 00를 치면 00에 해당하는 명령어 PID가 나오는데, 그럴 때 kill -15 PID를 치면된다.</p><p id="f0887945-1d31-45e5-84f0-6cb6574709c7" class="">kill PID를 치면  -15를 생략한 것이다.</p><p id="916c04b1-e8da-4aaf-bc4c-7a58a0cb60d9" class="">Kill -15로 안되면 -9로 하면된다.</p></li></ul></details></li></ul><ul id="242a5416-43a6-423b-aacd-f11e812dd5e4" class="bulleted-list"><li style="list-style-type:disc">pkill 명령을 이용해 프로세스 종료가 가능하다 (다 죽여)<ul id="97f77bc8-4726-49a2-9580-7ef31fae76a6" class="bulleted-list"><li style="list-style-type:circle">패턴을 나타내는 p의 의미를 갖고있는데.. pkill man을 입력하면 man이 들어간 모든 프로세스가 죽어버린다.</li></ul></li></ul><ul id="4ea110f5-4d38-448b-87dd-b3031ee6d067" class="bulleted-list"><li style="list-style-type:disc">killall 명령도 pkill과 유사 기능이지만, 명확한 프로세스 이름을 제시해야한다. (하나만 죽여)</li></ul></details></li></ul><p id="e5181e5b-3395-4465-a475-51f9d9647d16" class="">
+</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><strong>포그라운드 작업(프로세스)</strong></summary><div class="indented"><ul id="9a26a716-998b-4dbd-ac95-b2b0197a94d2" class="bulleted-list"><li style="list-style-type:disc">정의 : 사용자가 입력한 명령이 실행되어 결과가 출력될 때까지 기다려야 하는 방식으로 처리되는 프로세스<p id="fe1cc369-5150-42ff-8f11-2faa68e1b899" class="">또는 입력 후 → 완료시 까지 다른 명령어를 입력하지못함.</p></li></ul><ul id="5b46f00f-887d-4dfd-a87d-4c0dafe17f4d" class="toggle"><li><details open=""><summary>백그라운드 작업</summary><ul id="3364b035-30c3-4300-a54c-3064d9537245" class="bulleted-list"><li style="list-style-type:disc">명령을 기다리지않고 다른 명령을 실행할 수 있게됨.</li></ul><ul id="64c8d6ef-076a-4536-955e-9583f3e80d9d" class="bulleted-list"><li style="list-style-type:disc">방법 : sleep 100 &amp;</li></ul><ul id="1beda572-eeda-4462-83cf-f7136ae5621f" class="bulleted-list"><li style="list-style-type:disc">&amp;(and)를 쓰면된다.</li></ul><p id="fc42ed8c-7677-4990-867a-958a5ccf7180" class="">
+</p></details></li></ul><ul id="75905994-a807-47ee-9c06-f4f64b56795d" class="toggle"><li><details open=""><summary><strong>포그라운드, 백그라운드 명령어</strong></summary><p id="31dd3d50-d6ac-40d4-ac1c-4a569339ba26" class=""><strong>백그라운드로 실행</strong> : sleep 100 &amp;</p><p id="ce7e735f-8252-4153-9833-a213d4be57b7" class=""><strong>사용자 passwd에 관한 내용 백그라운드로 다 찾는다</strong> : find / -name passwd &gt;&gt; out2 &gt; out &amp;</p><p id="9401e383-6bfc-4e7e-8db1-6899076e724b" class=""><strong>백그라운드 작업 목록 보기</strong> : jobs</p><p id="4e669494-faeb-44bd-932c-c1e3b7f5ae92" class=""><strong>jobs 검색 후, -는 이전 작업, +는 최근 작업이다.</strong></p><p id="561d23f8-7ea1-4595-93b5-cc049bf22648" class=""><strong>작업번호가 지시하는 작업을 백그라운드 작업으로 전환</strong> : bg [% 작업번호]</p><p id="f31b3a0e-8d78-4cea-9d88-bb4d8fb45746" class="">Ctrl+Z = 멈춤, Ctrl+C = 종료 (kill 명령어에서 kill-2번을 담당하는 컨+C)</p><p id="d34e358e-ab66-4e0f-8b36-af4eb2cb36a4" class=""><strong>작업 전환 (백그라운드 → 포그라운드)</strong> : fg [%작업번호]</p><p id="ab5061f3-c07d-451e-9252-69954f95de50" class=""><strong>백그라운드는 kill 명령어로 죽일 수 있다</strong> :  kill -15 [PID], kill [%작업번호]</p><p id="0ccffbf0-4cfb-41e0-a4a7-b43f63a6b526" class=""><strong>로그아웃 후에도 백그라운드 작업 계속 실행하기</strong> : nohup</p></details></li></ul></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><strong>작업 예약</strong></summary><div class="indented"><ul id="456477b1-cbcd-4efa-8a92-6cd1a678a25e" class="bulleted-list"><li style="list-style-type:disc">정해진 시간에 한 번만 수행하기 (at)</li></ul><ul id="205d2ddd-0d37-45aa-b4ee-dc56c227597b" class="bulleted-list"><li style="list-style-type:disc">정해진 시간에 반복 수행하기 (crontab)</li></ul><figure id="c3470386-8a5a-46db-94b5-314b8aebdc3f" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%2011.png"><img style="width:1070px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%2011.png"/></a></figure><ul id="3fcaae25-7672-467a-bc47-d0f4c5539db1" class="bulleted-list"><li style="list-style-type:disc"><strong>현재 작업 예약을 볼 때 명령어</strong> : at -l (atq)<ul id="2218d19f-abe3-4670-98c6-d7a87a80712e" class="bulleted-list"><li style="list-style-type:circle"><strong>슈퍼유저 일 땐, atq 명령으로 모든 사용자의 at 작업 목록을 확인할 수 있다.</strong></li></ul></li></ul><ul id="cd3f068b-52f2-4a94-9fc6-d06f2bbfbb8e" class="bulleted-list"><li style="list-style-type:disc"><strong>작업 예약을 지우고 싶을 때</strong> : at -d (atrm)</li></ul><ul id="49db7edf-413b-498d-99d9-bbd8f22c4c43" class="bulleted-list"><li style="list-style-type:disc"><strong>at을 사용할 때, Ctrl + D를 누르면 빠져나올 수 있다.</strong></li></ul><ul id="f5a57386-c0db-416b-9194-7415cee192dd" class="bulleted-list"><li style="list-style-type:disc"><strong>(파일위치) </strong><span style="border-bottom:0.05em solid"><strong>/var/spool/cron/atjobs</strong></span><p id="7b613a9b-6d46-4147-908c-9e1a7ca07fa5" class=""><strong>at의 파일 위치</strong> </p></li></ul><ul id="4885cebb-5523-4914-87e0-35d40780c377" class="bulleted-list"><li style="list-style-type:disc">at 명령 사용 제한하기</li></ul><ul id="28b1a8e4-17e8-4c44-b10f-632128aa9413" class="bulleted-list"><li style="list-style-type:disc"><strong>/etc/at.allow</strong> 파일이 있으면 이 파일 안에 있는 사용자만 at 명령 사용 가능 (화이트리스트)</li></ul><ul id="e0a8de9c-315a-4014-a891-987c516c2fde" class="bulleted-list"><li style="list-style-type:disc"><strong>/etc/at.deny</strong> 파일만 있으면 이 파일에 사용자가 없어야 at 명령 가능 (블랙리스트)<ul id="6a5047c5-ecb4-4b3c-b845-af6deb2cae32" class="bulleted-list"><li style="list-style-type:circle"><strong>/etc/at.deny를 빈 파일로 두면 모든 사용자가 at 명령 사용 가능 (초기 상태)</strong></li></ul></li></ul><ul id="db8636de-9238-4a3c-964e-cf8ef02cbc1e" class="toggle"><li><details open=""><summary><strong>정해진 시간에 반복 실행</strong> (crontab)</summary><ul id="4832cf5b-897a-4081-ab24-9d4485250e11" class="bulleted-list"><li style="list-style-type:disc"><strong>crontab 이용하여 정해진 시간에 반복실행</strong><figure id="766cc533-90f6-4c80-b22b-bb545f1f5773" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%2012.png"><img style="width:598px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%2012.png"/></a></figure></li></ul><ul id="2ad64281-197c-4813-b3c2-acd3c3117989" class="bulleted-list"><li style="list-style-type:disc"><strong>EDITOR를 vi로 설정하는 것</strong> : EDITOR=vi</li></ul><ul id="5f879031-7837-495a-add6-2b71bda59220" class="bulleted-list"><li style="list-style-type:disc"><strong>crontab 파일 생성하고, 편집하기</strong> : crontab -e (edit)<ul id="9869193d-cda7-4f2f-92b0-f61ade6febe8" class="bulleted-list"><li style="list-style-type:circle">30 11 1 * * /bin/ls -l ~user1 &gt; ~user1/cron.out</li></ul><ul id="95f78240-1075-461b-ba85-affc3ffa6e80" class="bulleted-list"><li style="list-style-type:circle"><strong>해석 : 11시 30분에 1일 되는 모든 n월에, 모든 n요일에 bin/ls -l을 해주고, 그 결과를 (root)에 있는 user1 안에 cron.out으로 결과를 남겨놔라.</strong></li></ul></li></ul><ul id="45829ce0-b6ce-4d3d-9763-e98f30b4aed3" class="bulleted-list"><li style="list-style-type:disc"><strong>crontab파일내용을 확인하고( l ),삭제하기( r )</strong> : crontab -l , -r</li></ul><ul id="711c8233-12d0-4f2a-bf06-2a9e9f153551" class="bulleted-list"><li style="list-style-type:disc"><strong>(파일위치) sudo ls -l </strong><span style="border-bottom:0.05em solid"><strong>/var/spool/cron/crontabs </strong></span><p id="30f598e6-69b4-4576-b777-6140fa334af0" class=""><strong>crontabs의 파일위치이다.</strong></p></li></ul><ul id="e8a78911-c718-4d19-bcd3-db8c45480a3c" class="bulleted-list"><li style="list-style-type:disc"></li></ul><p id="a4711f11-c014-483e-b540-7663989a18ec" class="">
+</p><p id="a9cccca0-2cbd-4898-92a0-7d987a1a5bd2" class="">
+</p></details></li></ul><p id="c4317a56-66ad-40bf-8136-201c53ebcc8e" class="">
+</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0">정리</summary><div class="indented"><figure id="91837f25-d21c-4395-af41-29b0c98dfdae" class="image"><a href="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%2013.png"><img style="width:682px" src="6%20%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%89%E1%85%A6%E1%84%89%E1%85%B3%20%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%2016acb1c707ea42b491978b951a403fdf/Untitled%2013.png"/></a></figure></div></details></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

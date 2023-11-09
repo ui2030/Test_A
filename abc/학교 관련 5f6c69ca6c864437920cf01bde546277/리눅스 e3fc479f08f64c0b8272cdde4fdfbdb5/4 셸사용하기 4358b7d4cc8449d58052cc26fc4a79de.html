@@ -1,0 +1,677 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>4. 셸사용하기</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="4358b7d4-cc84-49d5-8052-cc26fc4a79de" class="page sans"><header><h1 class="page-title">4. 셸사용하기</h1><p class="page-description"></p></header><div class="page-body"><p id="9f3f3ba1-4ee4-4237-81e1-5b94287dcc74" class="">배시 셸 환경 설정</p><p id="015501aa-6526-4e83-a3c9-3f517fb3ce24" class=""><span style="border-bottom:0.05em solid"><strong>셸 변수와 환경 변수</strong></span></p><ul id="8150935a-eaf3-4917-b4e5-62bdb460f556" class="toggle"><li><details open=""><summary><strong>사용자 마다 셸 환경을 설정하기 위해서 셸 변수와 환경 변수를 설정함</strong></summary><ul id="3535c436-8674-4edd-ac6b-9989a603f77b" class="bulleted-list"><li style="list-style-type:disc">셸 변수 : 현재 셸에만 적용되고 서브 셸에는 적용되지 않는다. (지역변수)</li></ul><ul id="a0f2a556-12a9-4f9c-9d27-eac25364f3df" class="bulleted-list"><li style="list-style-type:disc">환경 변수 : 현재 셸뿐만 아니라 서브 셸에도 적용됨 (전역변수)</li></ul><ul id="c15928e8-45f6-4786-8418-1e3c4069afb4" class="bulleted-list"><li style="list-style-type:disc">로그인 셸에 적용되는 개수가 각 셸 + 환경 변수 = 각 셸 적용 변수</li></ul><ul id="6b883b54-5c72-4fdb-8c2c-05ad33abedbd" class="bulleted-list"><li style="list-style-type:disc"><strong>set :</strong> <strong>변수</strong>뿐만 아니라, <strong>함수</strong>로 정의된 것도 같이 출력</li></ul><ul id="707a72ea-6f89-49c8-b03d-cc83a46eea79" class="bulleted-list"><li style="list-style-type:disc"><strong>env : </strong>환경 변수만 출력하려면 <strong>env</strong>을 사용한다.</li></ul><ul id="4d360908-7811-4235-ac97-85dd5b06b961" class="toggle"><li><details open=""><summary>주요 셸 환경변수</summary><ul id="fc514507-b813-4f79-b1f6-861cfee4c45e" class="bulleted-list"><li style="list-style-type:disc">주요 셸 환경변수</li></ul><ul id="329c7be4-b962-431a-82e1-1441e29d0353" class="bulleted-list"><li style="list-style-type:disc">HISTSIZE : 히스토리 저장 크기</li></ul><ul id="3f706220-e441-4df9-bcb6-bffc592b751a" class="bulleted-list"><li style="list-style-type:disc">PATH : 명령을 탐색할 경로</li></ul><ul id="56bec5ac-f69b-4cd4-9ca4-939b9f41ecd5" class="bulleted-list"><li style="list-style-type:disc">HOME : 사용자 홈 디렉터리의 절대 경로</li></ul><ul id="c2572dc9-3fe6-4d7c-8ba9-72b0809cf8ff" class="bulleted-list"><li style="list-style-type:disc">PWD : 작업 디렉터리의 절대 경로</li></ul><ul id="174ff001-0272-4eff-88eb-88b576b2e101" class="bulleted-list"><li style="list-style-type:disc">LANG : 사용하는 언어</li></ul><ul id="56766158-d795-4363-92e3-dcc2653bc36a" class="bulleted-list"><li style="list-style-type:disc">SHELL : 로그인 셸</li></ul><ul id="db9efe17-c5c3-4b7c-9be4-4bf94b9df290" class="bulleted-list"><li style="list-style-type:disc">LOGNAME : 사용자 계정 이름</li></ul><p id="5dab6273-22de-4fb1-84d9-1a408df145a7" class=""><strong>-특정 변수 출력하기</strong></p><ul id="076d766f-f97e-47b6-b54b-3bf4d78ad08d" class="bulleted-list"><li style="list-style-type:disc">변수의 값을 출력할 때는 변수 이름 앞에 특수문자 $를 붙임</li></ul><ul id="684ecf8c-9609-45a2-92eb-74dd205a6d1e" class="bulleted-list"><li style="list-style-type:disc">ex) echo $SHELL 이런식</li></ul></details></li></ul></details></li></ul><ul id="a28eb795-0324-4769-b738-adb5d0960f3b" class="toggle"><li><details open=""><summary><strong>셸 변수 설정하기 ( 변수 이름과 문자열 사이에 공백이 있으면 안됨)</strong></summary><ul id="2e83740a-ab94-48e6-be14-8f4496105e75" class="bulleted-list"><li style="list-style-type:disc"><strong>변수명 = 문자열</strong>이다. 기억하자.</li></ul><ul id="31bdfec7-6f1b-4d31-aa86-c9719864f947" class="bulleted-list"><li style="list-style-type:disc"><strong>SOME1=test</strong> <span style="border-bottom:0.05em solid">(변수 이름과 문자열이니까 공백이 있으면 안된다.)</span></li></ul><ul id="cf1529f2-87fa-4ca0-b82a-3ac75ce5b40b" class="toggle"><li><details open=""><summary><strong>환경 변수 설정하기 (export)</strong></summary><ul id="841ef090-bc1f-4401-9286-273cda181232" class="bulleted-list"><li style="list-style-type:disc">먼저 셸 변수를 정의하고, export 명령을 사용하여 이를 환경 변수로 설정한다.</li></ul><ul id="b1915f35-be5f-45bd-906d-fedd30dfdd00" class="bulleted-list"><li style="list-style-type:disc">export SOME1</li></ul><ul id="953c1cfb-8a02-4bc0-af20-00a1999d8002" class="bulleted-list"><li style="list-style-type:disc">env | grep SOME = 환경변수인 SOME이라는 이름을 갖고있는 변수를 찾아라 export SOME1는 환경변수 SOME1을 등록하겠다는 의미이다.</li></ul></details></li></ul><ul id="26720137-ae62-4f76-9d09-96d0b4ca7189" class="toggle"><li><details open=""><summary>환경 변수를 다시 셸 변수로 바꾸기 (export -n)</summary></details></li></ul></details></li></ul><ul id="5dff9276-0b30-4056-97e5-a0f883b191a8" class="toggle"><li><details open=""><summary><strong>5.에일리어스와 히스토리</strong></summary><ul id="fc459b80-1f1c-4231-8461-1530ef21ec8f" class="bulleted-list"><li style="list-style-type:disc"><strong>에일리어스 (alias) : 쉽게 말해 별명을 만든다는 뜻이다.</strong></li></ul><ul id="c56c283e-9c13-4f56-a67d-525d853e7f64" class="bulleted-list"><li style="list-style-type:disc"><strong>alias를 지우고싶을땐 간단하게 unalias라고 쓰면된다.</strong></li></ul><ul id="fc64ace7-f5e6-4a38-bc2e-73f2fcc506c0" class="bulleted-list"><li style="list-style-type:disc"><strong>에일리어스 (alias)만 입력한다면 alias로 줄인 명령 목록보기가능</strong></li></ul><ul id="43d773e3-b6d8-4c1c-ad8a-fd81df11d9d1" class="bulleted-list"><li style="list-style-type:disc">alias를 사용해서 긴 명령어를 효과적으로 짧게 만들어준다.</li></ul><ul id="3d473e57-7f1b-46ff-b440-90a71b4f10f2" class="bulleted-list"><li style="list-style-type:disc">alias를 사용해서 여러 명령을 연결해서 하나의 명령으로도 만들 수 있다.</li></ul><ul id="83b9c9d5-9c22-4b0f-b375-10c9baffeb49" class="bulleted-list"><li style="list-style-type:disc">alias를 사용하여 자주 사용하는 옵션을 포함하여 새로운 이름을 붙여서 사용 가능</li></ul><ul id="366c25d0-6c4b-49e8-b9a8-bc6cb35c892c" class="bulleted-list"><li style="list-style-type:disc"><span style="border-bottom:0.05em solid">※보통 직장 가서 모르는 명령어를 보면 진짜 모르는 명령어거나 alias이다.</span></li></ul><ul id="2df9ab13-e5c3-488d-9296-95d7ff6875d4" class="bulleted-list"><li style="list-style-type:disc">실제로 사용하는 명령어중에 rm=’rm -r’으로 지우려고 할 때 지울거냐고 물어보게 만든다.</li></ul></details></li></ul><ul id="3154b553-22cb-476a-92a7-846fe97a70d8" class="toggle"><li><details open=""><summary><strong>배시 셸 환경 설정 사용법 예시들임</strong></summary><p id="a092032c-0a6d-46c8-9757-dc8dc6b25315" class="">TIP = |(\) 는 파이프라고 부른다.</p><ul id="ad71cac9-ffb0-4242-8964-03bc598468ae" class="bulleted-list"><li style="list-style-type:disc"><strong>set | grep HIST :</strong> HIST가 들어간 문자열의 데이터를 모두 찾아준다.</li></ul><ul id="d8ef3bbd-c163-4845-8056-58a6f5c84422" class="bulleted-list"><li style="list-style-type:disc"><strong>env | grep PATH : </strong>env내에서 PATH와 관련된 것을 다 찾아준다.</li></ul><ul id="a0ca6126-9e4a-4adc-8836-f0038bbda7e1" class="bulleted-list"><li style="list-style-type:disc">SOME1=test1 (SOME1라는 변수를 만들었다.)</li></ul><ul id="36f4fd62-b0c0-4b14-8694-a6afc7f57bf7" class="bulleted-list"><li style="list-style-type:disc">set | grep SOME</li></ul><ul id="1a5f78db-38da-4399-8bf7-93c89180f82e" class="bulleted-list"><li style="list-style-type:disc">env | grep SOME = 안 나옴.</li></ul><ul id="fc2d22cd-a70c-4d16-ab36-519460c026b2" class="bulleted-list"><li style="list-style-type:disc">export SOME2=test2</li></ul><ul id="1435f84c-4a62-47bc-9002-179f5b822e05" class="bulleted-list"><li style="list-style-type:disc">env | grep SOME = 둘 다 나온다. SOME1,2</li></ul><ul id="24a67c46-bea1-456f-ab9a-54a10566c7a5" class="bulleted-list"><li style="list-style-type:disc">unset SOME1, unset SOME2 = 변수 SOME1,2를 지운다.</li></ul></details></li></ul><ul id="a4b94577-535b-4c10-bd18-70eb452b75a4" class="toggle"><li><details open=""><summary><span style="border-bottom:0.05em solid"><strong>히스토리</strong></span></summary><ul id="1eb55af7-525d-438b-b45a-cae5b8307475" class="toggle"><li><details open=""><summary><strong>히스토리(history) 사용법</strong></summary><ul id="99aae0fb-5e25-447c-b885-c4aa5b2408ef" class="bulleted-list"><li style="list-style-type:disc">history는 내가 쓴 명령어의 목록을 순번대로 볼 수 있다.</li></ul><figure id="2706e4d1-225c-4f10-b05a-51f17772e214" class="image"><a href="4%20%E1%84%89%E1%85%A8%E1%86%AF%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%204358b7d4cc8449d58052cc26fc4a79de/Untitled.png"><img style="width:132px" src="4%20%E1%84%89%E1%85%A8%E1%86%AF%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%204358b7d4cc8449d58052cc26fc4a79de/Untitled.png"/></a></figure><ul id="0cdf3423-66ab-4ba1-aed8-52a5ff19ceb2" class="bulleted-list"><li style="list-style-type:disc">history에서 추가적인 기능 중 한개인데, <strong>!1090</strong>을 입력하면 1090번에 있는 clear가 실행되고, !cl 이라고 입력하면 history에서 최근 사용한 cl관련 명령어를 실행한다.</li></ul><ul id="157aa79c-d644-487e-942d-c2a134320c4c" class="bulleted-list"><li style="list-style-type:disc">more .bash_history를 입력하면 여태까지 입력한 모든 history를 알 수 있다.</li></ul><p id="8f661692-8228-45fc-b705-7b3a2a610f2d" class="">프롬프트에서 사용할 수 있는 문자 많이있지만 중요한것만 외우자.</p></details></li></ul></details></li></ul><ul id="452cfd9d-6914-474b-b4c7-8588e57f5087" class="toggle"><li><details open=""><summary><strong>프롬프트 설정 (좀 어렵다)</strong></summary><ul id="7e450b07-9051-4371-8efd-04b8e5e51380" class="bulleted-list"><li style="list-style-type:disc"><strong>일단 무조건 알아야하는거 : 복구 방법 (아래가 복구방법)</strong></li></ul><figure id="87bfddf6-7363-4e1b-b19c-c4bc78964586" class="image"><a href="4%20%E1%84%89%E1%85%A8%E1%86%AF%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%204358b7d4cc8449d58052cc26fc4a79de/Untitled%201.png"><img style="width:605px" src="4%20%E1%84%89%E1%85%A8%E1%86%AF%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%204358b7d4cc8449d58052cc26fc4a79de/Untitled%201.png"/></a></figure><ul id="a72f8668-17c5-4e9d-b561-79cb334b3a8c" class="bulleted-list"><li style="list-style-type:disc">PS1=’($PWD)’ 작업위치 변경</li></ul><figure id="42351e54-a895-43a3-a5d1-a5097405a13c" class="image"><a href="4%20%E1%84%89%E1%85%A8%E1%86%AF%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%204358b7d4cc8449d58052cc26fc4a79de/Untitled%202.png"><img style="width:414px" src="4%20%E1%84%89%E1%85%A8%E1%86%AF%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%204358b7d4cc8449d58052cc26fc4a79de/Untitled%202.png"/></a></figure><ul id="59aa3ac8-142c-40f5-bff2-fa85b9d3e993" class="bulleted-list"><li style="list-style-type:disc">PS1=’(\u@\t $PWD)’      u 현재 사용자 t는 타입. 시간</li></ul><figure id="75e2795c-1fbd-4eb3-91ec-49591e898d7b" class="image"><a href="4%20%E1%84%89%E1%85%A8%E1%86%AF%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%204358b7d4cc8449d58052cc26fc4a79de/Untitled%203.png"><img style="width:443px" src="4%20%E1%84%89%E1%85%A8%E1%86%AF%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%204358b7d4cc8449d58052cc26fc4a79de/Untitled%203.png"/></a></figure><ul id="e3466dbc-8f74-45d0-99d5-9a39bb8cf6db" class="bulleted-list"><li style="list-style-type:disc"><strong>MYPROMPT=$PS1 : </strong>  MYPROMPT 프롬프트에 있는 값을 PS1에 저장한다.</li></ul><ul id="8aeb7e47-6119-407d-865d-b542d5155d4d" class="bulleted-list"><li style="list-style-type:disc"><strong>PS1=$MYPROMPT :</strong>  PS1 변수에 원래 프롬프트 설정정보를 가진 변수를 할당한다.</li></ul></details></li></ul><ul id="35bf205a-7892-4830-a809-84df19905c17" class="toggle"><li><details open=""><summary>요약</summary><figure id="634e2e2d-41d6-44ed-80cf-3c1bf639c32f" class="image"><a href="4%20%E1%84%89%E1%85%A8%E1%86%AF%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%204358b7d4cc8449d58052cc26fc4a79de/Untitled%204.png"><img style="width:682px" src="4%20%E1%84%89%E1%85%A8%E1%86%AF%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%204358b7d4cc8449d58052cc26fc4a79de/Untitled%204.png"/></a></figure></details></li></ul><p id="48d5263c-c488-4ae0-8e2a-40f9f88454e5" class="">
+</p><p id="dc7a728e-1b66-44b9-af88-de1a224beee1" class="">응용 프로그램 →셸→리눅스커널→하드웨어 (응셸커하)</p><p id="98256f77-d5bb-4000-9e02-08abe0763779" class="">셸 변수는 현재 셸만 적용</p><p id="34ee1013-7bc3-4922-90eb-ffbd84f9630e" class="">환경 변수는 전체 셸 적용</p><p id="b53e248f-e982-43b1-9740-9c0ca7d12715" class="">로그인 셸에 적용되는 개수가 각 셸 + 환경 변수 = 각 셸 적용 변수</p><p id="11ad8c96-940b-48ac-88b1-766deffbe6c6" class="">set : 변수, 함수 출력</p><p id="53699070-14e0-4e92-9874-c63982b78d85" class="">env : 환경 변수만</p><p id="0daed452-46f3-4f17-9cc6-e1313fce69e1" class="">PWD : 작업 디렉터리의 절대 경로</p><p id="981f6a87-3faa-4331-8c85-cad160c4f856" class=""><span style="border-bottom:0.05em solid">변수 이름과 문자열이니까 공백이 있으면 안된다.</span></p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
